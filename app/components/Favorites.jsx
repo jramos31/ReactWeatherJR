@@ -4,7 +4,7 @@ var {Link} = require('react-router');
 var Favorites = (props) => {
     return (
         <div>
-            <h1 className="text-center">Favorites</h1>
+            <h1 className="text-center titile">Favorites</h1>
             <p>Your Saved Locations</p>
             <ol>
                 <li>

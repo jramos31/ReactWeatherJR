@@ -113,6 +113,8 @@
 	__webpack_require__(273);
 	$(document).foundation();
 
+	__webpack_require__(277);
+
 	ReactDOM.render(React.createElement(
 	    Router,
 	    { history: hashHistory },
@@ -27239,12 +27241,12 @@
 	                        React.createElement(
 	                            'li',
 	                            null,
-	                            React.createElement('input', { type: 'search', placeholder: 'Search Weather' })
+	                            React.createElement('input', { type: 'search', placeholder: 'Search Weather by City' })
 	                        ),
 	                        React.createElement(
 	                            'li',
 	                            null,
-	                            React.createElement('input', { type: 'submit', className: 'button', value: 'Get Weather' })
+	                            React.createElement('input', { type: 'submit', className: 'button', value: 'Go' })
 	                        )
 	                    )
 	                )
@@ -27337,7 +27339,7 @@
 	            null,
 	            React.createElement(
 	                'h1',
-	                { className: 'text-center' },
+	                { className: 'text-center titile' },
 	                'Get Weather'
 	            ),
 	            React.createElement(WeatherForm, { onSearch: this.handleSearch }),
@@ -27377,7 +27379,7 @@
 	            React.createElement(
 	                'form',
 	                { onSubmit: this.onFormSubmit },
-	                React.createElement('input', { type: 'text', ref: 'location' }),
+	                React.createElement('input', { type: 'search', ref: 'location', placeholder: 'Search Weather by City' }),
 	                React.createElement(
 	                    'button',
 	                    { className: 'button expanded hollow' },
@@ -28837,7 +28839,7 @@
 	        null,
 	        React.createElement(
 	            "h1",
-	            { className: "text-center" },
+	            { className: "text-center titile" },
 	            "About"
 	        ),
 	        React.createElement(
@@ -28897,7 +28899,7 @@
 	        null,
 	        React.createElement(
 	            'h1',
-	            { className: 'text-center' },
+	            { className: 'text-center titile' },
 	            'Favorites'
 	        ),
 	        React.createElement(
@@ -29287,6 +29289,46 @@
 		if(oldSrc)
 			URL.revokeObjectURL(oldSrc);
 	}
+
+
+/***/ },
+/* 277 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(278);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(276)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./app.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./app.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 278 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(275)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".titile {\n    margin: 35px 0 30px 0;\n}\n\ninput[type=search] {\n    box-shadow: none;\n}\n", ""]);
+
+	// exports
 
 
 /***/ }

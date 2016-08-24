@@ -3,7 +3,7 @@ var React = require('react');
 var About = (props) => {
     return (
         <div>
-            <h1 className="text-center">About</h1>
+            <h1 className="text-center titile">About</h1>
             <p>
                 This application will return the weather of any location entered by the user.
                 The user can also add his/her favorite locations.
