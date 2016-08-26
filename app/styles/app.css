@@ -1,0 +1,28 @@
+.titile {
+    margin: 155px 0 50px 0;
+    font-family: Helvetica;
+    font-weight: 300;
+}
+
+.custom-input {
+    color: #000;
+    background-color: transparent;
+    text-align: center;
+    display: inline-block;
+    width: 350px;
+    border: none;
+    border-bottom: solid #000 2px;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    padding: 5px;
+}
+
+.custom-input:focus {
+    outline: none;
+}
+
+.weatherMessage {
+    text-align: center;
+    margin-top: 30px;
+}
