@@ -107,13 +107,13 @@
 
 	var Main = __webpack_require__(242);
 	var Weather = __webpack_require__(244);
-	var About = __webpack_require__(271);
-	var Favorites = __webpack_require__(272);
-
-	__webpack_require__(273);
-	$(document).foundation();
+	var About = __webpack_require__(275);
+	var Favorites = __webpack_require__(276);
 
 	__webpack_require__(277);
+	$(document).foundation();
+
+	__webpack_require__(281);
 
 	ReactDOM.render(React.createElement(
 	    Router,
@@ -27183,7 +27183,14 @@
 
 	    onSearch: function onSearch(e) {
 	        e.preventDefault();
-	        alert('Not Wire up');
+
+	        var location = this.refs.location.value;
+	        var encodedLocation = encodeURIComponent(location);
+
+	        if (location.length > 0) {
+	            this.refs.location.value = '';
+	            window.location.hash = '#/?location=' + encodedLocation;
+	        }
 	    },
 	    render: function render() {
 	        return React.createElement(
@@ -27241,7 +27248,7 @@
 	                        React.createElement(
 	                            'li',
 	                            null,
-	                            React.createElement('input', { type: 'search', placeholder: 'Search Weather by City' })
+	                            React.createElement('input', { type: 'search', ref: 'location', placeholder: 'City?' })
 	                        ),
 	                        React.createElement(
 	                            'li',
@@ -27277,7 +27284,7 @@
 	var WeatherForm = __webpack_require__(245);
 	var WeatherMessage = __webpack_require__(246);
 	var ErrorModal = __webpack_require__(247);
-	var openWeatherMap = __webpack_require__(248);
+	var openWeatherMap = __webpack_require__(252);
 
 	var Weather = React.createClass({
 	    displayName: 'Weather',
@@ -27292,7 +27299,10 @@
 
 	        this.setState({
 	            isLoading: true,
-	            errorMessage: undefined
+	            errorMessage: undefined,
+	            location: undefined,
+	            temp: undefined,
+	            icon: undefined
 	        });
 
 	        openWeatherMap.getTemp(location).then(function (temp) {
@@ -27307,6 +27317,22 @@
 	                errorMessage: e.message
 	            });
 	        });
+	    },
+	    componentDidMount: function componentDidMount() {
+	        var location = this.props.location.query.location;
+
+	        if (location && location.length > 0) {
+	            this.handleSearch(location);
+	            window.location.hash = '#/';
+	        }
+	    },
+	    componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	        var location = newProps.location.query.location;
+
+	        if (location && location.length > 0) {
+	            this.handleSearch(location);
+	            window.location.hash = '#/';
+	        }
 	    },
 	    render: function render() {
 	        var _state = this.state;
@@ -27379,12 +27405,8 @@
 	            React.createElement(
 	                'form',
 	                { onSubmit: this.onFormSubmit },
-	                React.createElement('input', { type: 'search', ref: 'location', placeholder: 'Search Weather by City' }),
-	                React.createElement(
-	                    'button',
-	                    { className: 'button expanded hollow' },
-	                    'Get Weather'
-	                )
+	                React.createElement('input', { className: 'custom-input', type: 'search', ref: 'location', placeholder: 'Enter Name of a City and Press Enter' }),
+	                React.createElement('button', { className: 'hidden' })
 	            )
 	        );
 	    }
@@ -27402,15 +27424,11 @@
 
 	var WeatherMessage = function WeatherMessage(_ref) {
 	    var temp = _ref.temp;
-	    var location = _ref.location;
 
 	    return React.createElement(
 	        "h3",
-	        { className: "text-center" },
-	        "It's ",
-	        temp,
-	        " in ",
-	        location
+	        { className: "weatherMessage" },
+	        temp
 	    );
 	};
 
@@ -27423,16 +27441,27 @@
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
 
 	var React = __webpack_require__(8);
+	var ReactDOM = __webpack_require__(41);
+	var ReactDOMServer = __webpack_require__(248);
 
 	var ErrorModal = React.createClass({
 	    displayName: 'ErrorModal',
 
-	    componentDidMount: function componentDidMount() {
-	        var modal = new Foundation.Reveal($('#error-modal'));
-	        modal.open();
+	    getDefaultProps: function getDefaultProps() {
+	        return {
+	            title: 'Error'
+	        };
 	    },
-	    render: function render() {
-	        return React.createElement(
+	    propTypes: {
+	        titile: React.PropTypes.string,
+	        message: React.PropTypes.string.isRequired
+	    },
+	    componentDidMount: function componentDidMount() {
+	        var _props = this.props;
+	        var title = _props.title;
+	        var message = _props.message;
+
+	        var modalMarkup = React.createElement(
 	            'div',
 	            { id: 'error-modal', className: 'reveal tiny text-center', 'data-reveal': '' },
 	            React.createElement(
@@ -27455,6 +27484,15 @@
 	                )
 	            )
 	        );
+
+	        var $modal = $(ReactDOMServer.renderToString(modalMarkup));
+	        $(ReactDOM.findDOMNode(this)).html($modal);
+	        var modal = new Foundation.Reveal($('#error-modal'));
+	        modal.open();
+	    },
+	    render: function render() {
+
+	        return React.createElement('div', null);
 	    }
 	});
 
@@ -27467,7 +27505,170 @@
 
 	'use strict';
 
-	var axios = __webpack_require__(249);
+	module.exports = __webpack_require__(249);
+
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactDOMServer
+	 */
+
+	'use strict';
+
+	var ReactDefaultInjection = __webpack_require__(46);
+	var ReactServerRendering = __webpack_require__(250);
+	var ReactVersion = __webpack_require__(39);
+
+	ReactDefaultInjection.inject();
+
+	var ReactDOMServer = {
+	  renderToString: ReactServerRendering.renderToString,
+	  renderToStaticMarkup: ReactServerRendering.renderToStaticMarkup,
+	  version: ReactVersion
+	};
+
+	module.exports = ReactDOMServer;
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactServerRendering
+	 */
+	'use strict';
+
+	var _prodInvariant = __webpack_require__(14);
+
+	var ReactDOMContainerInfo = __webpack_require__(170);
+	var ReactDefaultBatchingStrategy = __webpack_require__(143);
+	var ReactElement = __webpack_require__(16);
+	var ReactInstrumentation = __webpack_require__(69);
+	var ReactMarkupChecksum = __webpack_require__(172);
+	var ReactReconciler = __webpack_require__(66);
+	var ReactServerBatchingStrategy = __webpack_require__(251);
+	var ReactServerRenderingTransaction = __webpack_require__(136);
+	var ReactUpdates = __webpack_require__(63);
+
+	var emptyObject = __webpack_require__(26);
+	var instantiateReactComponent = __webpack_require__(128);
+	var invariant = __webpack_require__(15);
+
+	var pendingTransactions = 0;
+
+	/**
+	 * @param {ReactElement} element
+	 * @return {string} the HTML markup
+	 */
+	function renderToStringImpl(element, makeStaticMarkup) {
+	  var transaction;
+	  try {
+	    ReactUpdates.injection.injectBatchingStrategy(ReactServerBatchingStrategy);
+
+	    transaction = ReactServerRenderingTransaction.getPooled(makeStaticMarkup);
+
+	    pendingTransactions++;
+
+	    return transaction.perform(function () {
+	      var componentInstance = instantiateReactComponent(element, true);
+	      var markup = ReactReconciler.mountComponent(componentInstance, transaction, null, ReactDOMContainerInfo(), emptyObject, 0 /* parentDebugID */
+	      );
+	      if (process.env.NODE_ENV !== 'production') {
+	        ReactInstrumentation.debugTool.onUnmountComponent(componentInstance._debugID);
+	      }
+	      if (!makeStaticMarkup) {
+	        markup = ReactMarkupChecksum.addChecksumToMarkup(markup);
+	      }
+	      return markup;
+	    }, null);
+	  } finally {
+	    pendingTransactions--;
+	    ReactServerRenderingTransaction.release(transaction);
+	    // Revert to the DOM batching strategy since these two renderers
+	    // currently share these stateful modules.
+	    if (!pendingTransactions) {
+	      ReactUpdates.injection.injectBatchingStrategy(ReactDefaultBatchingStrategy);
+	    }
+	  }
+	}
+
+	/**
+	 * Render a ReactElement to its initial HTML. This should only be used on the
+	 * server.
+	 * See https://facebook.github.io/react/docs/top-level-api.html#reactdomserver.rendertostring
+	 */
+	function renderToString(element) {
+	  !ReactElement.isValidElement(element) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'renderToString(): You must pass a valid ReactElement.') : _prodInvariant('46') : void 0;
+	  return renderToStringImpl(element, false);
+	}
+
+	/**
+	 * Similar to renderToString, except this doesn't create extra DOM attributes
+	 * such as data-react-id that React uses internally.
+	 * See https://facebook.github.io/react/docs/top-level-api.html#reactdomserver.rendertostaticmarkup
+	 */
+	function renderToStaticMarkup(element) {
+	  !ReactElement.isValidElement(element) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'renderToStaticMarkup(): You must pass a valid ReactElement.') : _prodInvariant('47') : void 0;
+	  return renderToStringImpl(element, true);
+	}
+
+	module.exports = {
+	  renderToString: renderToString,
+	  renderToStaticMarkup: renderToStaticMarkup
+	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
+
+/***/ },
+/* 251 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2014-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactServerBatchingStrategy
+	 */
+
+	'use strict';
+
+	var ReactServerBatchingStrategy = {
+	  isBatchingUpdates: false,
+	  batchedUpdates: function (callback) {
+	    // Don't do anything here. During the server rendering we don't want to
+	    // schedule any updates. We will simply ignore them.
+	  }
+	};
+
+	module.exports = ReactServerBatchingStrategy;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var axios = __webpack_require__(253);
 
 	var OPEN_WEATHER_MAP_URL = 'http://api.openweathermap.org/data/2.5/weather?appid=8ff3d10734cb7351012a91ce493e5aec&units=imperial';
 
@@ -27480,7 +27681,7 @@
 	            if (res.data.cod && res.data.message) {
 	                throw new Error(res.data.message);
 	            } else {
-	                return res.data.main.temp;
+	                return Math.round(res.data.main.temp) + '℉ with ' + res.data.weather[0].description + ' in ' + res.data.name;
 	            }
 	        }, function (res) {
 	            throw new Error(res.data.message);
@@ -27489,20 +27690,20 @@
 	};
 
 /***/ },
-/* 249 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(250);
+	module.exports = __webpack_require__(254);
 
 /***/ },
-/* 250 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
-	var bind = __webpack_require__(252);
-	var Axios = __webpack_require__(253);
+	var utils = __webpack_require__(255);
+	var bind = __webpack_require__(256);
+	var Axios = __webpack_require__(257);
 
 	/**
 	 * Create an instance of Axios
@@ -27538,16 +27739,16 @@
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(270);
+	axios.spread = __webpack_require__(274);
 
 
 /***/ },
-/* 251 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var bind = __webpack_require__(252);
+	var bind = __webpack_require__(256);
 
 	/*global toString:true*/
 
@@ -27847,7 +28048,7 @@
 
 
 /***/ },
-/* 252 */
+/* 256 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -27864,17 +28065,17 @@
 
 
 /***/ },
-/* 253 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var defaults = __webpack_require__(254);
-	var utils = __webpack_require__(251);
-	var InterceptorManager = __webpack_require__(256);
-	var dispatchRequest = __webpack_require__(257);
-	var isAbsoluteURL = __webpack_require__(268);
-	var combineURLs = __webpack_require__(269);
+	var defaults = __webpack_require__(258);
+	var utils = __webpack_require__(255);
+	var InterceptorManager = __webpack_require__(260);
+	var dispatchRequest = __webpack_require__(261);
+	var isAbsoluteURL = __webpack_require__(272);
+	var combineURLs = __webpack_require__(273);
 
 	/**
 	 * Create a new instance of Axios
@@ -27955,13 +28156,13 @@
 
 
 /***/ },
-/* 254 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
-	var normalizeHeaderName = __webpack_require__(255);
+	var utils = __webpack_require__(255);
+	var normalizeHeaderName = __webpack_require__(259);
 
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 	var DEFAULT_CONTENT_TYPE = {
@@ -28033,12 +28234,12 @@
 
 
 /***/ },
-/* 255 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -28051,12 +28252,12 @@
 
 
 /***/ },
-/* 256 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -28109,13 +28310,13 @@
 
 
 /***/ },
-/* 257 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(251);
-	var transformData = __webpack_require__(258);
+	var utils = __webpack_require__(255);
+	var transformData = __webpack_require__(262);
 
 	/**
 	 * Dispatch a request to the server using whichever adapter
@@ -28156,10 +28357,10 @@
 	    adapter = config.adapter;
 	  } else if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(259);
+	    adapter = __webpack_require__(263);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(259);
+	    adapter = __webpack_require__(263);
 	  }
 
 	  return Promise.resolve(config)
@@ -28191,12 +28392,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
-/* 258 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	/**
 	 * Transform the data for a request or a response
@@ -28217,18 +28418,18 @@
 
 
 /***/ },
-/* 259 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(251);
-	var settle = __webpack_require__(260);
-	var buildURL = __webpack_require__(263);
-	var parseHeaders = __webpack_require__(264);
-	var isURLSameOrigin = __webpack_require__(265);
-	var createError = __webpack_require__(261);
-	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(266);
+	var utils = __webpack_require__(255);
+	var settle = __webpack_require__(264);
+	var buildURL = __webpack_require__(267);
+	var parseHeaders = __webpack_require__(268);
+	var isURLSameOrigin = __webpack_require__(269);
+	var createError = __webpack_require__(265);
+	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(270);
 
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -28322,7 +28523,7 @@
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(267);
+	      var cookies = __webpack_require__(271);
 
 	      // Add xsrf header
 	      var xsrfValue = config.withCredentials || isURLSameOrigin(config.url) ?
@@ -28384,12 +28585,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ },
-/* 260 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createError = __webpack_require__(261);
+	var createError = __webpack_require__(265);
 
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -28415,12 +28616,12 @@
 
 
 /***/ },
-/* 261 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var enhanceError = __webpack_require__(262);
+	var enhanceError = __webpack_require__(266);
 
 	/**
 	 * Create an Error with the specified message, config, error code, and response.
@@ -28438,7 +28639,7 @@
 
 
 /***/ },
-/* 262 */
+/* 266 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28463,12 +28664,12 @@
 
 
 /***/ },
-/* 263 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -28537,12 +28738,12 @@
 
 
 /***/ },
-/* 264 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	/**
 	 * Parse headers into an object
@@ -28580,12 +28781,12 @@
 
 
 /***/ },
-/* 265 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -28654,7 +28855,7 @@
 
 
 /***/ },
-/* 266 */
+/* 270 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28696,12 +28897,12 @@
 
 
 /***/ },
-/* 267 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var utils = __webpack_require__(251);
+	var utils = __webpack_require__(255);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -28755,7 +28956,7 @@
 
 
 /***/ },
-/* 268 */
+/* 272 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28775,7 +28976,7 @@
 
 
 /***/ },
-/* 269 */
+/* 273 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28793,7 +28994,7 @@
 
 
 /***/ },
-/* 270 */
+/* 274 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -28826,7 +29027,7 @@
 
 
 /***/ },
-/* 271 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -28845,7 +29046,7 @@
 	        React.createElement(
 	            "p",
 	            null,
-	            "This application will return the weather of any location entered by the user. The user can also add his/her favorite locations."
+	            "This application will return the weather of any City entered by the user. The user can also add his/her favorite locations."
 	        ),
 	        React.createElement(
 	            "p",
@@ -28863,7 +29064,7 @@
 	                    { href: "https://facebook.github.io/react" },
 	                    "React"
 	                ),
-	                " JavaScript Framework used for this project"
+	                " React is a JavaScript library for creating user interfaces. Many people choose to think of React as the V in Model View Controller (MVC)."
 	            ),
 	            React.createElement(
 	                "li",
@@ -28873,7 +29074,27 @@
 	                    { href: "http://openweathermap.org" },
 	                    "Open Weather Map"
 	                ),
-	                " API providing City's Weather"
+	                " Simple, clear, and free weather API."
+	            ),
+	            React.createElement(
+	                "li",
+	                null,
+	                React.createElement(
+	                    "a",
+	                    { href: "https://webpack.github.io/" },
+	                    "Webpack"
+	                ),
+	                " A Module bundler that puts all of the assets (JavaScript, CSS, Images, etc) in a dependency graph."
+	            ),
+	            React.createElement(
+	                "li",
+	                null,
+	                React.createElement(
+	                    "a",
+	                    { href: "https://dashboard.heroku.com/apps" },
+	                    "Heroku"
+	                ),
+	                " Heroku is a cloud application platform – a new way of building and deploying web apps."
 	            )
 	        )
 	    );
@@ -28881,7 +29102,7 @@
 	module.exports = About;
 
 /***/ },
-/* 272 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28944,16 +29165,16 @@
 	module.exports = Favorites;
 
 /***/ },
-/* 273 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(274);
+	var content = __webpack_require__(278);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(276)(content, {});
+	var update = __webpack_require__(280)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -28970,10 +29191,10 @@
 	}
 
 /***/ },
-/* 274 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(275)();
+	exports = module.exports = __webpack_require__(279)();
 	// imports
 
 
@@ -28984,7 +29205,7 @@
 
 
 /***/ },
-/* 275 */
+/* 279 */
 /***/ function(module, exports) {
 
 	/*
@@ -29040,7 +29261,7 @@
 
 
 /***/ },
-/* 276 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -29292,16 +29513,16 @@
 
 
 /***/ },
-/* 277 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(278);
+	var content = __webpack_require__(282);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(276)(content, {});
+	var update = __webpack_require__(280)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -29318,15 +29539,15 @@
 	}
 
 /***/ },
-/* 278 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(275)();
+	exports = module.exports = __webpack_require__(279)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".titile {\n    margin: 35px 0 30px 0;\n}\n\ninput[type=search] {\n    box-shadow: none;\n}\n", ""]);
+	exports.push([module.id, ".titile {\n    margin: 155px 0 50px 0;\n    font-family: Helvetica;\n    font-weight: 300;\n}\n\n.custom-input {\n    color: #000;\n    background-color: transparent;\n    text-align: center;\n    display: inline-block;\n    width: 350px;\n    border: none;\n    border-bottom: solid #000 2px;\n    border-radius: 0;\n    box-shadow: none;\n    -webkit-box-shadow: none;\n    padding: 5px;\n}\n\n.custom-input:focus {\n    outline: none;\n}\n\n.weatherMessage {\n    text-align: center;\n    margin-top: 30px;\n}\n", ""]);
 
 	// exports
 

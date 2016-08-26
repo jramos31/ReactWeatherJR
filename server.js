@@ -1,4 +1,3 @@
-//Creates localhost to run the application
 var express = require('express');
 
 var app = express(); //Creates the app
