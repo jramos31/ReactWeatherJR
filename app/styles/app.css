@@ -1,6 +1,29 @@
+body {
+    background-image: url('http://kaba35.com/wp-content/uploads/2015/11/Savin-NY-Website-Background-Web.jpg');
+    background-size: auto;
+    background-position: center;
+    font-family: Helvetica;
+    font-weight: 300;
+}
+
+.top-bar, .top-bar ul {
+    background-color: transparent;
+}
+
+.top-bar input, input.button {
+    border-radius: 10px;
+}
+
+.active {
+    text-decoration: underline;
+}
+
+.menu>li>a {
+    color: #616970;
+}
+
 .titile {
     margin: 155px 0 50px 0;
-    font-family: Helvetica;
     font-weight: 300;
 }
 
@@ -25,4 +48,23 @@
 .weatherMessage {
     text-align: center;
     margin-top: 30px;
+}
+
+.aboutList>li {
+    margin-bottom: 25px;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.aboutList>li>a, .favList>li>a {
+    color: #000;
+    font-weight: 600;
+}
+
+.favList>li {
+    margin-bottom: 7px;
 }

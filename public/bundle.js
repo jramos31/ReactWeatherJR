@@ -27213,7 +27213,7 @@
 	                        React.createElement(
 	                            IndexLink,
 	                            { to: '/', activeClassName: 'active', activeStyle: { fontWeight: 'bold' } },
-	                            'Get Weather'
+	                            'Search Weather'
 	                        )
 	                    ),
 	                    React.createElement(
@@ -27366,7 +27366,7 @@
 	            React.createElement(
 	                'h1',
 	                { className: 'text-center titile' },
-	                'Get Weather'
+	                'Search Weather'
 	            ),
 	            React.createElement(WeatherForm, { onSearch: this.handleSearch }),
 	            renderMessage(),
@@ -29046,7 +29046,7 @@
 	        React.createElement(
 	            "p",
 	            null,
-	            "This application will return the weather of any City entered by the user. The user can also add his/her favorite locations."
+	            "This application will return the weather of any city entered by the user. My favorite locations can be found in the Favorites Tab"
 	        ),
 	        React.createElement(
 	            "p",
@@ -29055,16 +29055,16 @@
 	        ),
 	        React.createElement(
 	            "ul",
-	            null,
+	            { className: "aboutList" },
 	            React.createElement(
 	                "li",
 	                null,
 	                React.createElement(
 	                    "a",
 	                    { href: "https://facebook.github.io/react" },
-	                    "React"
+	                    "React:"
 	                ),
-	                " React is a JavaScript library for creating user interfaces. Many people choose to think of React as the V in Model View Controller (MVC)."
+	                " a JavaScript library for creating user interfaces. Many people choose to think of React as the V in Model View Controller (MVC)."
 	            ),
 	            React.createElement(
 	                "li",
@@ -29072,7 +29072,7 @@
 	                React.createElement(
 	                    "a",
 	                    { href: "http://openweathermap.org" },
-	                    "Open Weather Map"
+	                    "Open Weather Map:"
 	                ),
 	                " Simple, clear, and free weather API."
 	            ),
@@ -29082,7 +29082,7 @@
 	                React.createElement(
 	                    "a",
 	                    { href: "https://webpack.github.io/" },
-	                    "Webpack"
+	                    "Webpack:"
 	                ),
 	                " A Module bundler that puts all of the assets (JavaScript, CSS, Images, etc) in a dependency graph."
 	            ),
@@ -29092,7 +29092,7 @@
 	                React.createElement(
 	                    "a",
 	                    { href: "https://dashboard.heroku.com/apps" },
-	                    "Heroku"
+	                    "Heroku:"
 	                ),
 	                " Heroku is a cloud application platform – a new way of building and deploying web apps."
 	            )
@@ -29124,13 +29124,8 @@
 	            'Favorites'
 	        ),
 	        React.createElement(
-	            'p',
-	            null,
-	            'Your Saved Locations'
-	        ),
-	        React.createElement(
 	            'ol',
-	            null,
+	            { className: 'favList' },
 	            React.createElement(
 	                'li',
 	                null,
@@ -29156,6 +29151,15 @@
 	                    Link,
 	                    { to: '/?location=LosAngeles' },
 	                    'Los Angeles, CA'
+	                )
+	            ),
+	            React.createElement(
+	                'li',
+	                null,
+	                React.createElement(
+	                    Link,
+	                    { to: '/?location=Washington' },
+	                    'Washington, DC'
 	                )
 	            )
 	        )
@@ -29547,7 +29551,7 @@
 
 
 	// module
-	exports.push([module.id, ".titile {\n    margin: 155px 0 50px 0;\n    font-family: Helvetica;\n    font-weight: 300;\n}\n\n.custom-input {\n    color: #000;\n    background-color: transparent;\n    text-align: center;\n    display: inline-block;\n    width: 350px;\n    border: none;\n    border-bottom: solid #000 2px;\n    border-radius: 0;\n    box-shadow: none;\n    -webkit-box-shadow: none;\n    padding: 5px;\n}\n\n.custom-input:focus {\n    outline: none;\n}\n\n.weatherMessage {\n    text-align: center;\n    margin-top: 30px;\n}\n", ""]);
+	exports.push([module.id, "body {\n    background-image: url('http://kaba35.com/wp-content/uploads/2015/11/Savin-NY-Website-Background-Web.jpg');\n    background-size: auto;\n    background-position: center;\n    font-family: Helvetica;\n    font-weight: 300;\n}\n\n.top-bar, .top-bar ul {\n    background-color: transparent;\n}\n\n.top-bar input, input.button {\n    border-radius: 10px;\n}\n\n.active {\n    text-decoration: underline;\n}\n\n.menu>li>a {\n    color: #616970;\n}\n\n.titile {\n    margin: 155px 0 50px 0;\n    font-weight: 300;\n}\n\n.custom-input {\n    color: #000;\n    background-color: transparent;\n    text-align: center;\n    display: inline-block;\n    width: 350px;\n    border: none;\n    border-bottom: solid #000 2px;\n    border-radius: 0;\n    box-shadow: none;\n    -webkit-box-shadow: none;\n    padding: 5px;\n}\n\n.custom-input:focus {\n    outline: none;\n}\n\n.weatherMessage {\n    text-align: center;\n    margin-top: 30px;\n}\n\n.aboutList>li {\n    margin-bottom: 25px;\n}\n\nul {\n    padding: 0;\n    margin: 0;\n    list-style: none;\n}\n\n.aboutList>li>a, .favList>li>a {\n    color: #000;\n    font-weight: 600;\n}\n\n.favList>li {\n    margin-bottom: 7px;\n}\n", ""]);
 
 	// exports
 

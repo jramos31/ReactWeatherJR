@@ -20,7 +20,7 @@ var Nav = React.createClass({
                     <ul className="menu">
                         <li className="menu-text">Weather with React</li>
                         <li>
-                            <IndexLink to ="/" activeClassName="active" activeStyle={{fontWeight: 'bold'}}>Get Weather</IndexLink>
+                            <IndexLink to ="/" activeClassName="active" activeStyle={{fontWeight: 'bold'}}>Search Weather</IndexLink>
                         </li>
                         <li>
                             <Link to="/about" activeClassName="active" activeStyle={{fontWeight: 'bold'}}>About</Link>

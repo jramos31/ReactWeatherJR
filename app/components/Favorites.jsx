@@ -5,8 +5,7 @@ var Favorites = (props) => {
     return (
         <div>
             <h1 className="text-center titile">Favorites</h1>
-            <p>Your Saved Locations</p>
-            <ol>
+            <ol className="favList">
                 <li>
                     <Link to='/?location=NewYork'>New York, NY</Link>
                 </li>
@@ -15,6 +14,9 @@ var Favorites = (props) => {
                 </li>
                 <li>
                     <Link to='/?location=LosAngeles'>Los Angeles, CA</Link>
+                </li>
+                <li>
+                    <Link to='/?location=Washington'>Washington, DC</Link>
                 </li>
             </ol>
         </div>
