@@ -2,4 +2,4 @@
 
 A simple Weather App that returns the current weather and condition of an city or state. 
 
-http://morning-sierra-12187.herokuapp.com/#/?_k=u8yfdk
+http://jean-ramos-react-weather.herokuapp.com/#/?_k=v5ay4v
